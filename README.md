@@ -9,3 +9,4 @@ En un equipo servidor se desarrolla un hardware de control que se ejecuta por me
 
 De esta forma se elimina la interacción directa que siempre ha existido entre el robot y su operario, ejecutando la aplicación por medio de una red de área local.
 El robot utilizado en el proyecto ha sido creado por la Universidad Autónoma Metropolitana Unidad Iztapalapa, evitando así acudir a robots elaborados por terceras personas y, por consiguiente, corriéndose el riesgo de encontrar problemas de estrategias de control dado que es casi imposible llegar a modificar el algoritmo de programación con el que ya vienen programados.
+![esquema_pepe](https://github.com/Navarrete00/Control_PEPE/assets/102823367/41f2abb4-b594-4299-80ff-8784e8821f37)
