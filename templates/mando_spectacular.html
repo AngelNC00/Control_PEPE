@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mando Profesional</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .control-joystick {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            background-color: #f8f9fa;
+            border: 2px solid #343a40;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .joystick-handle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 50px;
+            height: 50px;
+            background-color: #007bff;
+            border: 2px solid #343a40;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .control-buttons button {
+            width: 80px;
+            height: 80px;
+            font-size: 18px;
+            margin: 0 10px;
+            border-radius: 50%;
+            border: none;
+        }
+
+        .footer {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Mando Profesional</h1>
+        <div class="control-joystick" id="joystick">
+            <div class="joystick-handle"></div>
+        </div>
+        <div class="control-buttons">
+            <button class="btn btn-primary" id="btn-forward">Adelante</button>
+            <button class="btn btn-secondary" id="btn-left">Izquierda</button>
+            <button class="btn btn-success" id="btn-stop">Detener</button>
+            <button class="btn btn-danger" id="btn-right">Derecha</button>
+            <button class="btn btn-warning" id="btn-reverse">Reversa</button>
+        </div>
+        <div class="footer">
+            <p>Control del Robot PEPE</p>
+            <p>Universidad Autónoma Metropolitana</p>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Obtener referencias a los elementos del joystick
+            var joystick = $('#joystick');
+            var handle = joystick.find('.joystick-handle');
+
+            // Variables para el control del joystick
+            var joystickRadius = joystick.width() / 2;
+            var isJoystickActive = false;
+
+            // Variables para almacenar las coordenadas del joystick
+            var joystickX = 0;
+            var joystickY = 0;
+
+            // Eventos táctiles para controlar el joystick
+            handle.on('touchstart mousedown', function(e) {
+                e.preventDefault();
+                isJoystickActive = true;
+            });
+
+            $(document).on('touchend mouseup', function() {
+                isJoystickActive = false;
+                resetJoystick();
+            });
+
+            $(document).on('touchmove mousemove', function(e) {
+                if (!isJoystickActive) return;
+                updateJoystick(e);
+            });
+
+            // Función para actualizar la posición del joystick
+            function updateJoystick(e) {
+                var touch = e.originalEvent.touches ? e.originalEvent.touches[0] : e;
+                var x = touch.pageX - joystick.offset().left - joystickRadius;
+                var y = touch.pageY - joystick.offset().top - joystickRadius;
+                var distance = Math.sqrt(x * x + y * y);
+
+                // Limitar el movimiento dentro del radio del joystick
+                if (distance > joystickRadius) {
+                    var angle = Math.atan2(y, x);
+                    x = Math.cos(angle) * joystickRadius;
+                    y = Math.sin(angle) * joystickRadius;
+                }
+
+                joystickX = x / joystickRadius;
+                joystickY = y / joystickRadius;
+
+                handle.css({
+                    'transform': 'translate(' + x + 'px,' + y + 'px)'
+                });
+
+                // Enviar comandos al servidor según la posición del joystick
+                enviarComandos();
+            }
+
+            // Función para reiniciar la posición del joystick
+            function resetJoystick() {
+                handle.css({
+                    'transform': 'translate(-50%, -50%)'
+                });
+
+                joystickX = 0;
+                joystickY = 0;
+
+                // Enviar comando de detener al servidor
+                enviarComandos();
+            }
+
+            // Función para enviar los comandos al servidor
+            function enviarComandos() {
+                var comandoX = Math.round(joystickX * 100);
+                var comandoY = Math.round(joystickY * 100);
+
+                // Aquí puedes implementar la lógica para enviar los comandos al servidor
+                console.log('Comando X: ' + comandoX);
+                console.log('Comando Y: ' + comandoY);
+            }
+
+            // Eventos de clic para los botones de control
+            $('#btn-forward').click(function() {
+                enviarComando('D');
+            });
+
+            $('#btn-reverse').click(function() {
+                enviarComando('I');
+            });
+
+            $('#btn-left').click(function() {
+                enviarComando('A');
+            });
+
+            $('#btn-right').click(function() {
+                enviarComando('R');
+            });
+
+            $('#btn-stop').click(function() {
+                enviarComando('S');
+            });
+
+            // Función para enviar el comando al servidor
+            function enviarComando(comando) {
+                // Aquí puedes implementar la lógica para enviar el comando al servidor
+                console.log('Comando enviado: ' + comando);
+            }
+        });
+    </script>
+</body>
+
+</html>

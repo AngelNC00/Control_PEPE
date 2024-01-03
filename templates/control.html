@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Control del Robot</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js" integrity="sha512-TDCUq/X/BO6g2Nbdm4ExUgttlcFlgea2x5sbLJET+1u7gsA9ft1hTEah7jWtBJTo0YzX7I+bak7Yiy3H7BcEpw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-Yr63IVej3EGzszlrER+xwQZb0xCviDYvd9YY23MHInWYZhT/0Eg5czvJ75WUZRG2" crossorigin="anonymous"></script>
+</head>
+<body>
+    <h1>Control del Robot PEPE</h1>
+    <div>
+        <button id="btnAvanzar">Avanzar</button>
+        <button id="btnReversa">Reversa</button>
+        <button id="btnDerecha">Derecha</button>
+        <button id="btnIzquierda">Izquierda</button>
+    </div>
+    <div>
+        <button id="btnBrazoIzq">Brazo Izquierdo</button>
+        <button id="btnBrazoDer">Brazo Derecho</button>
+        <button id="btnCabezaSi">Cabeza SI</button>
+        <button id="btnCabezaNo">Cabeza NO</button>
+    </div>
+    <script type="text/javascript">
+        const socket = io.connect();
+        const buttons = {
+            'btnAvanzar': 'D',
+            'btnReversa': 'I',
+            'btnDerecha': 'R',
+            'btnIzquierda': 'A',
+            'btnBrazoIzq': 'Z',
+            'btnBrazoDer': 'E',
+            'btnCabezaSi': 'S',
+            'btnCabezaNo': 'N'
+        };
+
+        $(document).ready(function() {
+            $('button').on('mousedown touchstart', function(e) {
+                const buttonId = e.target.id;
+                const command = buttons[buttonId];
+                socket.emit('command', command);
+            });
+
+            $('button').on('mouseup touchend', function(e) {
+                socket.emit('command', 'P');
+            });
+        });
+    </script>
+</body>
+</html>
